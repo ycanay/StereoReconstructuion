@@ -1,6 +1,7 @@
 #include <DatasetLoader.h>
 #include <iostream>
-namespace reconstruction{
+namespace reconstruction
+{
 
 DatasetLoader::DatasetLoader()
 {
