@@ -3,6 +3,10 @@
 namespace reconstruction
 {
 
+/**
+ * @brief Construct a new Dataset Loader:: Dataset Loader object and reads and parses necessary files.
+ * 
+ */
 DatasetLoader::DatasetLoader()
 {
     dataset_path_ = "data/Piano-perfect";
@@ -38,15 +42,30 @@ DatasetLoader::DatasetLoader()
     image_right_ = Image(image_right, right_intrinsics);
 }
 
+/**
+ * @brief Destroy the Dataset Loader:: Dataset Loader object
+ * 
+ */
 DatasetLoader::~DatasetLoader()
 {
 }
 
+/**
+ * @brief Get images from the datasetloader
+ * 
+ * @return std::pair<Image,Image> Left and right images.
+ */
 std::pair<Image,Image> DatasetLoader::getImages(){
     return std::pair<Image,Image> (image_left_,image_right_);
 }
 
-
+/**
+ * @brief Split the string
+ * 
+ * @param s string to be splited
+ * @param delim delimiter
+ * @return std::vector<std::string> list of strings.
+ */
 std::vector<std::string> DatasetLoader::split(const std::string &s, char delim) {
   std::stringstream ss(s);
   std::string item;

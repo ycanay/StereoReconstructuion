@@ -1,3 +1,12 @@
+/**
+ * @file DatasetLoader.h
+ * @brief Loader class that reads images from folder.
+ * @version 0.1
+ * @date 2023-06-26
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #ifndef DATASETLOADER_H
 #define DATASETLOADER_H
 

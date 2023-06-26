@@ -22,6 +22,13 @@ ExtrinsicsCalculator::~ExtrinsicsCalculator()
 {
 }
 
+/**
+ * @brief Construct a new Extrinsics Calculator:: Extrinsics Calculator object
+ * 
+ * @param detector_type Type of the detector
+ * @param min_hessian 
+ * @param ratio_threshold 
+ */
 ExtrinsicsCalculator::ExtrinsicsCalculator(DetectorType detector_type, int min_hessian, float ratio_threshold)
 {
     switch (detector_type)
@@ -44,6 +51,13 @@ ExtrinsicsCalculator::ExtrinsicsCalculator(DetectorType detector_type, int min_h
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 }
 
+/**
+ * @brief Calculate all of the matches and return them
+ * 
+ * @param left_image 
+ * @param right_image 
+ * @return Matchings  All of the good matchings.
+ */
 Matchings ExtrinsicsCalculator::getMatches(Image left_image, Image right_image)
 {
     KeyPoints keypoints_left, keypoints_right;
@@ -71,7 +85,13 @@ Matchings ExtrinsicsCalculator::getMatches(Image left_image, Image right_image)
     return matches;
 }
 
-
+/**
+ * @brief Draw the matches and save them
+ * 
+ * @param matchings Matchings gathered before
+ * @param left_image 
+ * @param right_image 
+ */
 void ExtrinsicsCalculator::drawMatches(Matchings matchings, Image left_image, Image right_image)
 {
     cv::Mat img_matches;

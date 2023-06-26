@@ -1,3 +1,12 @@
+/**
+ * @file ExtrinsicsCalculator.h
+ * @brief That Function calculates the extrinsics between two camreas.
+ * @version 0.1
+ * @date 2023-06-26
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #ifndef EXTRINSICCALCULATOR_H
 #define EXTRINSICCALCULATOR_H
 

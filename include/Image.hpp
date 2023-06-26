@@ -1,3 +1,12 @@
+/**
+ * @file Image.hpp
+ * @brief Image class that we use for the project.
+ * @version 0.1
+ * @date 2023-06-26
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #ifndef IMAGE_HPP
 #define IMAGE_HPP
 
