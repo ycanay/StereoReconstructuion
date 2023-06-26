@@ -1,11 +1,15 @@
+#ifndef EXTRINSICCALCULATOR_H
+#define EXTRINSICCALCULATOR_H
+
 #include <iostream>
 #include "opencv2/core.hpp"
 #include "opencv2/features2d.hpp"
 #include "opencv2/xfeatures2d.hpp"
+#include "opencv2/highgui.hpp"
 
 #include "Eigen/Dense"
 
-#include <Image.h>
+#include <Image.hpp>
 
 namespace reconstruction
 {
@@ -43,5 +47,8 @@ public:
     ExtrinsicsCalculator(DetectorType detector_type, int min_hessian, float ratio_threshold);
     ~ExtrinsicsCalculator();
     Matchings getMatches(Image left_image, Image right_image);
+    void drawMatches(Matchings matchings, Image left_image, Image right_image);
 };
 };
+
+#endif //EXTRINSICCALCULATOR_H

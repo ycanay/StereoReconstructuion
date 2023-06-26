@@ -1,10 +1,13 @@
+#ifndef DATASETLOADER_H
+#define DATASETLOADER_H
+
 #include "opencv2/core.hpp"
 #include <opencv2/imgcodecs.hpp>
 
 #include <vector>
 #include <fstream>
 
-#include <Image.h>
+#include <Image.hpp>
 
 
 namespace reconstruction{
@@ -23,3 +26,5 @@ public:
     std::pair<Image,Image> getImages();
 };
 };
+
+#endif //DATASETLOADER_H

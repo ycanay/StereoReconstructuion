@@ -10,7 +10,7 @@ ExtrinsicsCalculator::ExtrinsicsCalculator()
 {
     detector_ = cv::SIFT::create();
     k_min_hessian_ = 400;
-    k_ratio_threshold_ = 0.7f;
+    k_ratio_threshold_ = 0.1f;
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 }
 
@@ -55,15 +55,30 @@ Matchings ExtrinsicsCalculator::getMatches(Image left_image, Image right_image)
     Matchings matches;
     matches.left_keypoints = keypoints_left;
     matches.right_keypoints = keypoints_right;
-    for (size_t i = 0; i < knn_matches.size(); i++)
+    for (size_t ratio = 1; ratio < 20; ratio++)
     {
-        if (knn_matches[i][0].distance < k_ratio_threshold_ * knn_matches[i][1].distance)
+        matches.good_matches.clear();
+        for (size_t i = 0; i < knn_matches.size(); i++)
         {
-            matches.good_matches.push_back(knn_matches[i][0]);
+            if (knn_matches[i][0].distance < ((float)ratio*0.05) * knn_matches[i][1].distance)
+            {
+                matches.good_matches.push_back(knn_matches[i][0]);
+            }
         }
+        if (matches.good_matches.size() > 16)
+            break;
     }
     return matches;
 }
 
+
+void ExtrinsicsCalculator::drawMatches(Matchings matchings, Image left_image, Image right_image)
+{
+    cv::Mat img_matches;
+    cv::drawMatches( left_image.getData(), matchings.left_keypoints.keypoints, right_image.getData(), matchings.right_keypoints.keypoints, matchings.good_matches, img_matches, cv::Scalar::all(-1),
+    cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
+    //-- Show detected matches
+    cv::imwrite("test.jpg", img_matches);
+}
 
 };

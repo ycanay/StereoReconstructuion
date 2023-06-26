@@ -1,3 +1,6 @@
+#ifndef IMAGE_HPP
+#define IMAGE_HPP
+
 #include <opencv2/core.hpp>
 #include <Eigen/Dense>
 
@@ -36,3 +39,4 @@ public:
 };
 
 };
+#endif //IMAGE_HPP

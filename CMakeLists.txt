@@ -14,3 +14,11 @@ target_link_libraries( DataSetLoader Eigen3::Eigen )
 add_executable(DataSetLoaderTest source/DatasetLoader.cpp tests/DataSetLoaderTest.cpp )
 target_link_libraries( DataSetLoaderTest ${OpenCV_LIBS} )
 target_link_libraries( DataSetLoaderTest Eigen3::Eigen )
+
+add_library(ExtrinsicsCalculator source/ExtrinsicsCalculator.cpp )
+target_link_libraries( ExtrinsicsCalculator ${OpenCV_LIBS} )
+target_link_libraries( ExtrinsicsCalculator Eigen3::Eigen )
+
+add_executable(ExtrinsicsCalculatorTest source/DatasetLoader.cpp tests/ExtrinsicsCalculatorTest.cpp source/ExtrinsicsCalculator.cpp )
+target_link_libraries( ExtrinsicsCalculatorTest ${OpenCV_LIBS} )
+target_link_libraries( ExtrinsicsCalculatorTest Eigen3::Eigen )

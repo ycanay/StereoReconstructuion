@@ -1,3 +1,6 @@
+#ifndef RECONSTRUCTIONMANAGER_H
+#define RECONSTRUCTIONMANAGER_H
+
 #include <DatasetLoader.h>
 #include <ExtrinsicsCalculator.h>
 
@@ -11,6 +14,8 @@ private:
 public:
     ReconstructionManager();
     ~ReconstructionManager();
+    void process();
 };
 
 };
+#endif //RECONSTRUCTIONMANAGER_H
