@@ -26,6 +26,11 @@
 namespace reconstruction
 {
 
+/**
+ * TODO:
+ * Check homography. Add the cv::sfm module.
+ * 
+ */
 struct KeyPoints
 {
     std::vector<cv::KeyPoint> keypoints;
