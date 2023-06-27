@@ -58,7 +58,7 @@ ExtrinsicsCalculator::ExtrinsicsCalculator(DetectorType detector_type, int min_h
  * @param right_image 
  * @return Matchings  All of the good matchings.
  */
-Matchings ExtrinsicsCalculator::getMatches(Image left_image, Image right_image)
+void ExtrinsicsCalculator::calculateMatches(Image left_image, Image right_image)
 {
     KeyPoints keypoints_left, keypoints_right;
     detector_->detectAndCompute( left_image.getData(), cv::noArray(), keypoints_left.keypoints, keypoints_left.descriptors );
@@ -82,7 +82,13 @@ Matchings ExtrinsicsCalculator::getMatches(Image left_image, Image right_image)
         if (matches.good_matches.size() > 16)
             break;
     }
-    return matches;
+    size_t size_left = keypoints_left.keypoints.size();
+    size_t size_right = keypoints_right.keypoints.size();
+    good_matchings_ = matches;
+    std::sort(good_matchings_.good_matches.begin(), good_matchings_.good_matches.end(),
+            [](cv::DMatch const &a, cv::DMatch const &b) {
+                return a.distance<b.distance;
+            });
 }
 
 /**
@@ -92,13 +98,34 @@ Matchings ExtrinsicsCalculator::getMatches(Image left_image, Image right_image)
  * @param left_image 
  * @param right_image 
  */
-void ExtrinsicsCalculator::drawMatches(Matchings matchings, Image left_image, Image right_image)
+void ExtrinsicsCalculator::drawMatches(Image left_image, Image right_image)
 {
     cv::Mat img_matches;
-    cv::drawMatches( left_image.getData(), matchings.left_keypoints.keypoints, right_image.getData(), matchings.right_keypoints.keypoints, matchings.good_matches, img_matches, cv::Scalar::all(-1),
+    cv::drawMatches( left_image.getData(), good_matchings_.left_keypoints.keypoints, right_image.getData(), good_matchings_.right_keypoints.keypoints, good_matchings_.good_matches, img_matches, cv::Scalar::all(-1),
     cv::Scalar::all(-1), std::vector<char>(), cv::DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS );
     //-- Show detected matches
     cv::imwrite("test.jpg", img_matches);
+}
+
+
+void ExtrinsicsCalculator::calculateMatchingPointsCoordinates()
+{
+    for(auto match:good_matchings_.good_matches){
+        PointPair new_pair;
+        new_pair.left_point = cv::Point2f(good_matchings_.left_keypoints.keypoints[match.queryIdx].pt);
+        new_pair.right_point = cv::Point2f(good_matchings_.right_keypoints.keypoints[match.trainIdx].pt);
+        matching_points_.push_back(new_pair);
+    }
+}
+
+Matchings ExtrinsicsCalculator::getGoodMatchings()
+{
+    return this->good_matchings_;
+}
+
+std::vector<PointPair> ExtrinsicsCalculator::getMatchingPointCoordinates()
+{
+    return this->matching_points_;
 }
 
 };

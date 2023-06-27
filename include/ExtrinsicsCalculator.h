@@ -36,7 +36,11 @@ struct Matchings
     std::vector<cv::DMatch> good_matches;
 };
 
-
+struct PointPair
+{
+    cv::Point2f left_point;
+    cv::Point2f right_point;
+};
 
 enum DetectorType{
     SIFT,
@@ -51,12 +55,18 @@ private:
     cv::Ptr<cv::DescriptorMatcher> matcher_;
     int k_min_hessian_;
     float k_ratio_threshold_;
+    Matchings good_matchings_;
+    std::vector<PointPair> matching_points_;
 public:
     ExtrinsicsCalculator();
     ExtrinsicsCalculator(DetectorType detector_type, int min_hessian, float ratio_threshold);
     ~ExtrinsicsCalculator();
-    Matchings getMatches(Image left_image, Image right_image);
-    void drawMatches(Matchings matchings, Image left_image, Image right_image);
+    void calculateMatches(Image left_image, Image right_image);
+    void drawMatches(Image left_image, Image right_image);
+    void eightPointMatching();
+    void calculateMatchingPointsCoordinates();
+    Matchings getGoodMatchings();
+    std::vector<PointPair> getMatchingPointCoordinates();
 };
 };
 
