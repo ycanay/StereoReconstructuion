@@ -10,13 +10,16 @@
 #ifndef EXTRINSICCALCULATOR_H
 #define EXTRINSICCALCULATOR_H
 
+#include "Eigen/Dense"
+
 #include <iostream>
 #include "opencv2/core.hpp"
 #include "opencv2/features2d.hpp"
 #include "opencv2/xfeatures2d.hpp"
 #include "opencv2/highgui.hpp"
+#include "opencv2/calib3d.hpp"
+#include <opencv2/core/eigen.hpp>
 
-#include "Eigen/Dense"
 
 #include <Image.hpp>
 
@@ -57,6 +60,9 @@ private:
     float k_ratio_threshold_;
     Matchings good_matchings_;
     std::vector<PointPair> matching_points_;
+    cv::Mat homography_;
+    Eigen::Matrix3d homography_eigen_;
+    std::vector<PointPair> normalized_matching_points_;
 public:
     ExtrinsicsCalculator();
     ExtrinsicsCalculator(DetectorType detector_type, int min_hessian, float ratio_threshold);
@@ -67,6 +73,9 @@ public:
     void calculateMatchingPointsCoordinates();
     Matchings getGoodMatchings();
     std::vector<PointPair> getMatchingPointCoordinates();
+    Eigen::Matrix3d getHomography();
+    void multiplyIntrinsics(Image left_image, Image right_image);
+
 };
 };
 

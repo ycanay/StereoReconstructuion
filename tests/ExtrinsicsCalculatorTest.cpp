@@ -12,6 +12,9 @@ int main()
     Calculator.drawMatches(images.first, images.second);
     Calculator.calculateMatchingPointsCoordinates();
     std::vector<reconstruction::PointPair> pairs = Calculator.getMatchingPointCoordinates();
+    Calculator.multiplyIntrinsics(images.first, images.second);
+    Calculator.eightPointMatching();
+    auto homo = Calculator.getHomography();
     std::cout<<"Finished Test"<<std::endl;
     return 0;
 }
