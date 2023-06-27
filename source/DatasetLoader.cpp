@@ -9,6 +9,22 @@ namespace reconstruction
  */
 DatasetLoader::DatasetLoader()
 {
+}
+
+/**
+ * @brief Destroy the Dataset Loader:: Dataset Loader object
+ * 
+ */
+DatasetLoader::~DatasetLoader()
+{
+}
+
+/**
+ * @brief Get images from the datasetloader
+ * 
+ * @return std::pair<Image,Image> Left and right images.
+ */
+ImagePair DatasetLoader::getImages(){
     dataset_path_ = "data/Piano-perfect";
     cv::Mat image_left = cv::imread("../" + dataset_path_ + "/im0.png", cv::IMREAD_COLOR);
     cv::Mat image_right = cv::imread("../" + dataset_path_ + "/im1.png", cv::IMREAD_COLOR);
@@ -38,25 +54,10 @@ DatasetLoader::DatasetLoader()
         if (i==1)
             break;
     }
-    image_left_ = Image(image_left, left_intrinsics);
-    image_right_ = Image(image_right, right_intrinsics);
-}
-
-/**
- * @brief Destroy the Dataset Loader:: Dataset Loader object
- * 
- */
-DatasetLoader::~DatasetLoader()
-{
-}
-
-/**
- * @brief Get images from the datasetloader
- * 
- * @return std::pair<Image,Image> Left and right images.
- */
-std::pair<Image,Image> DatasetLoader::getImages(){
-    return std::pair<Image,Image> (image_left_,image_right_);
+    ImagePair images;
+    images.left_image = Image(image_left, left_intrinsics);
+    images.right_image = Image(image_right, right_intrinsics);
+    return images;
 }
 
 /**

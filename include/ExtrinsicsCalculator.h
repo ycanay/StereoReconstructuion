@@ -20,7 +20,7 @@
 #include "opencv2/calib3d.hpp"
 #include <opencv2/core/eigen.hpp>
 
-
+#include <Types.hpp>
 #include <Image.hpp>
 
 namespace reconstruction
@@ -31,55 +31,20 @@ namespace reconstruction
  * Check homography. Add the cv::sfm module.
  * 
  */
-struct KeyPoints
-{
-    std::vector<cv::KeyPoint> keypoints;
-    cv::Mat descriptors;
-};
 
-struct Matchings
-{
-    KeyPoints left_keypoints;
-    KeyPoints right_keypoints;
-    std::vector<cv::DMatch> good_matches;
-};
-
-struct PointPair
-{
-    cv::Point2f left_point;
-    cv::Point2f right_point;
-};
-
-enum DetectorType{
-    SIFT,
-    ORB,
-    SURF
-};
 
 class ExtrinsicsCalculator
 {
 private:
-    cv::Ptr<cv::Feature2D> detector_;
-    cv::Ptr<cv::DescriptorMatcher> matcher_;
-    int k_min_hessian_;
-    float k_ratio_threshold_;
-    Matchings good_matchings_;
-    std::vector<PointPair> matching_points_;
     cv::Mat homography_;
     Eigen::Matrix3d homography_eigen_;
     std::vector<PointPair> normalized_matching_points_;
 public:
     ExtrinsicsCalculator();
-    ExtrinsicsCalculator(DetectorType detector_type, int min_hessian, float ratio_threshold);
     ~ExtrinsicsCalculator();
-    void calculateMatches(Image left_image, Image right_image);
-    void drawMatches(Image left_image, Image right_image);
-    void eightPointMatching();
-    void calculateMatchingPointsCoordinates();
-    Matchings getGoodMatchings();
-    std::vector<PointPair> getMatchingPointCoordinates();
+    void eightPointMatching(std::vector<PointPair> matching_points_);
     Eigen::Matrix3d getHomography();
-    void multiplyIntrinsics(Image left_image, Image right_image);
+//    void multiplyIntrinsics(std::vector<PointPair> matching_points_);
 
 };
 };
