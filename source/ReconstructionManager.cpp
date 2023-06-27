@@ -10,6 +10,7 @@ ReconstructionManager::ReconstructionManager()
 {
     detector_ = cv::SIFT::create();
     k_min_hessian_ = 400;
+    k_min_number_of_matches_ = 8;
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 }
 
@@ -21,6 +22,11 @@ ReconstructionManager::~ReconstructionManager()
 {
 }
 
+/**
+ * @brief Set type of the detector either SIFT, ORB or SURF
+ * 
+ * @param detector_type 
+ */
 void ReconstructionManager::setDetectorType(DetectorType detector_type)
 {
     switch (detector_type)
@@ -40,14 +46,12 @@ void ReconstructionManager::setDetectorType(DetectorType detector_type)
     }
 }
 
+
 /**
- * @brief Calculate all of the matches and return them
+ * @brief Detect keypoints and match them until we have enough of them
  * 
- * @param left_image 
- * @param right_image 
- * @return * void 
  */
-void ReconstructionManager::calculateMatches()
+void ReconstructionManager::detectKeypointsAndeMatch()
 {
     KeyPoints keypoints_left, keypoints_right;
     detector_->detectAndCompute( images_.left_image.getData(), cv::noArray(), keypoints_left.keypoints, keypoints_left.descriptors );
@@ -68,7 +72,7 @@ void ReconstructionManager::calculateMatches()
                 matches.good_matches.push_back(knn_matches[i][0]);
             }
         }
-        if (matches.good_matches.size() > 16)
+        if (matches.good_matches.size() > k_min_number_of_matches_)
             break;
     }
     size_t size_left = keypoints_left.keypoints.size();
@@ -127,9 +131,10 @@ std::vector<PointPair> ReconstructionManager::getMatchingPointCoordinates()
 void ReconstructionManager::process()
 {
     images_ = dataset_loader_.getImages();
-    calculateMatches();
+    detectKeypointsAndeMatch();
     drawMatches();
     calculateMatchingPointsCoordinates();
+    extrinsic_calculator_.eightPointMatching(matching_points_);
 }
 
 

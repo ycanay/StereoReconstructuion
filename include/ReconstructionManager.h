@@ -31,6 +31,7 @@ private:
 
     //Constants
     int k_min_hessian_;
+    int k_min_number_of_matches_;//Must be bigger than 8
 
 public:
     ReconstructionManager();
@@ -38,7 +39,7 @@ public:
     
     void process();
 
-    void calculateMatches();
+    void detectKeypointsAndeMatch();
     void drawMatches();
     void calculateMatchingPointsCoordinates();
     Matchings getGoodMatchings();
