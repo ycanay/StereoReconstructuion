@@ -30,7 +30,7 @@ public:
     Image(cv::Mat data, Eigen::Matrix3d camera_intrinsics)
     {
         data.copyTo(image_data_);
-        camera_intrinsics = camera_intrinsics;
+        camera_intrinsics_ = camera_intrinsics;
     }
 
     ~Image()
