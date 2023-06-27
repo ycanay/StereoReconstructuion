@@ -42,7 +42,7 @@ private:
 public:
     ExtrinsicsCalculator();
     ~ExtrinsicsCalculator();
-    void eightPointMatching(std::vector<PointPair> matching_points_);
+    void eightPointMatching(std::vector<PointPair> matching_points);
     Eigen::Matrix3d getHomography();
 //    void multiplyIntrinsics(std::vector<PointPair> matching_points_);
 
