@@ -4,11 +4,12 @@ namespace reconstruction
 {
 
 /**
- * @brief Construct a new Dataset Loader:: Dataset Loader object and reads and parses necessary files.
+ * @brief Construct a new Dataset Loader:: Dataset Loader object
  * 
  */
 DatasetLoader::DatasetLoader()
 {
+    dataset_path_ = "data/Piano-perfect";
 }
 
 /**
@@ -22,10 +23,9 @@ DatasetLoader::~DatasetLoader()
 /**
  * @brief Get images from the datasetloader
  * 
- * @return std::pair<Image,Image> Left and right images.
+ * @return ImagePair Left and righ images
  */
 ImagePair DatasetLoader::getImages(){
-    dataset_path_ = "data/Piano-perfect";
     cv::Mat image_left = cv::imread("../" + dataset_path_ + "/im0.png", cv::IMREAD_COLOR);
     cv::Mat image_right = cv::imread("../" + dataset_path_ + "/im1.png", cv::IMREAD_COLOR);
     file_.open("../" + dataset_path_+"/calib.txt");
