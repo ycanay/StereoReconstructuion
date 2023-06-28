@@ -16,8 +16,10 @@ cmake ..
 make -j4
 make test
 sudo make install
-```bash
+```
+
 Next you need to install opencv.
+
 ```bash
 mkdir opencv && cd opencv
 sudo apt update && sudo apt install -y cmake g++ wget unzip
@@ -47,7 +49,9 @@ In my system I have added them as :
   "/usr/local/include/ceres"
 ] 
 ```
+
 Clone project repo and try to build
+
 ```bash
 git clone https://github.com/ycanay/StereoReconstructuion
 cd StereoReconstructuion
@@ -56,6 +60,7 @@ cd build
 cmake ..
 make all
 ```
+
 In total it should look something like this
 
 ![image](https://github.com/ycanay/StereoReconstructuion/assets/18121684/a95f9f32-52a8-445b-a82d-5a9223f535c7)
