@@ -10,7 +10,7 @@ ReconstructionManager::ReconstructionManager()
 {
     detector_ = cv::SIFT::create();
     k_min_hessian_ = 400;
-    k_min_number_of_matches_ = 8;
+    k_min_number_of_matches_ = 20;
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
 }
 
@@ -134,7 +134,8 @@ void ReconstructionManager::process()
     detectKeypointsAndeMatch();
     drawMatches();
     calculateMatchingPointsCoordinates();
-    extrinsic_calculator_.eightPointMatching(matching_points_);
+    extrinsic_calculator_.eightPointMatchingCV(matching_points_);
+    extrinsic_calculator_.drawEpipolarLines(matching_points_, images_);
 }
 
 
