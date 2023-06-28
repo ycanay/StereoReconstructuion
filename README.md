@@ -39,3 +39,11 @@ In my system I have added them as :
   "/usr/local/include/ceres"
 ] 
 ```
+To build the code
+```
+cd StereoReconstructuion
+mkdir build
+cd build
+cmake ..
+make all
+```
