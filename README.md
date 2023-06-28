@@ -17,6 +17,7 @@ sudo make install
 ```
 Next you need to install opencv
 ```
+mkdir opencv && cd opencv
 sudo apt update && sudo apt install -y cmake g++ wget unzip
 wget -O opencv.zip https://github.com/opencv/opencv/archive/4.x.zip
 wget -O opencv_contrib.zip https://github.com/opencv/opencv_contrib/archive/4.x.zip
