@@ -1,3 +1,12 @@
+/**
+ * @file Types.hpp
+ * @brief This file is where all of the custom types defined.
+ * @version 0.1
+ * @date 2023-06-28
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
 #ifndef TYPES_H
 #define TYPES_H
 

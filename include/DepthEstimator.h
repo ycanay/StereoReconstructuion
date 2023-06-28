@@ -1,3 +1,13 @@
+/**
+ * @file DepthEstimator.h
+ * @brief This class needs to create depthmap from the essential and fundamental matrices.
+ * @version 0.1
+ * @date 2023-06-28
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+//TODO: Whole
 #ifndef DEPTH_ESTIMATOR_H
 #define DEPTH_ESTIMATOR_H
 
