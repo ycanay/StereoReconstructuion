@@ -65,6 +65,11 @@ In total it should look something like this
 
 ![image](https://github.com/ycanay/StereoReconstructuion/assets/18121684/a95f9f32-52a8-445b-a82d-5a9223f535c7)
 
+---
+Install pcl
+```bash
+sudo apt install libpcl-dev
+```
 
 ## Build and execute
 ```bash
