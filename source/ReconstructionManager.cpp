@@ -134,8 +134,7 @@ void ReconstructionManager::process()
     detectKeypointsAndeMatch();
     drawMatches();
     calculateMatchingPointsCoordinates();
-    extrinsic_calculator_.eightPointMatchingCV(matching_points_);
-    extrinsic_calculator_.drawEpipolarLines(matching_points_, images_);
+    extrinsic_calculator_.process(matching_points_, images_);
 }
 
 

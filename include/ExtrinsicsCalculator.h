@@ -11,6 +11,7 @@
 #define EXTRINSICCALCULATOR_H
 
 #include "Eigen/Dense"
+#include "Eigen/Jacobi"
 
 #include <iostream>
 #include "opencv2/core.hpp"
@@ -44,15 +45,34 @@ private:
     std::vector<PointPair> normalized_matching_points_;
     cv::Mat fundamental_;
     Eigen::Matrix3d fundamental_eigen_;
-public:
-    ExtrinsicsCalculator();
-    ~ExtrinsicsCalculator();
+    cv::Mat essential_;
+    Eigen::Matrix3d essential_eigen_;
+    cv::Mat transformation_;
+    Eigen::Matrix4d transformation_eigen_;
+    ImagePair lined_images_;
+    cv::Ptr<cv::StereoBM> macther_;
+    cv::Mat H1_;
+    cv::Mat H2_;
+    cv::Mat left_rect_;
+    cv::Mat right_rect_;
+
     void eightPointMatching(std::vector<PointPair> matching_points);
     void eightPointMatchingCV(std::vector<PointPair> matching_points);
     Eigen::Matrix3d getHomography();
     void drawEpipolarLines(std::vector<PointPair> matching_points, ImagePair images);
+    void calculateEssentialMatrix(ImagePair images);
+    void calculateTransofmration(std::vector<PointPair> matching_points);
+    void drawRectifiedImages();
+    void calculateRectifiedImages();
 
-//    void multiplyIntrinsics(std::vector<PointPair> matching_points_);
+public:
+    ExtrinsicsCalculator();
+    ~ExtrinsicsCalculator();
+    void process(std::vector<PointPair> matching_points, ImagePair images);
+    Eigen::Matrix3d getEssentialMatrix();
+    cv::Mat getEssentialMat();
+    Eigen::Matrix3d getFundamentalMatrix();
+    cv::Mat getFundamentalMat();
 
 };
 };
