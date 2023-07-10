@@ -55,6 +55,19 @@ private:
     cv::Mat H2_;
     cv::Mat left_rect_;
     cv::Mat right_rect_;
+    cv::Mat R_;
+    cv::Mat T_;
+    cv::Mat left_camera_rect_rot_;
+    cv::Mat right_camera_rect_rot_;
+    cv::Mat left_projection_matrix_;
+    cv::Mat right_projection_matrix_;
+    cv::Mat disparity_map_matrix_;
+    cv::Rect ROI_left_;
+    cv::Rect ROI_right_;
+    cv::Mat mappings_left_[2];
+    cv::Mat mappings_right_[2];
+    cv::Mat rectified_image_left_;
+    cv::Mat rectified_image_right_;
 
     void eightPointMatching(std::vector<PointPair> matching_points);
     void eightPointMatchingCV(std::vector<PointPair> matching_points);
@@ -64,6 +77,13 @@ private:
     void calculateTransofmration(std::vector<PointPair> matching_points);
     void drawRectifiedImages();
     void calculateRectifiedImages();
+    void calculateDisparity();
+    Eigen::Vector3d calculateLeftEpipole();
+    Eigen::Vector3d calculateRightEpipole();
+    void findCorrectTranslations(std::vector<PointPair> matching_points, ImagePair images);
+    void rectifyImage(ImagePair images);
+    void saveImages(ImagePair images);
+
 
 public:
     ExtrinsicsCalculator();
