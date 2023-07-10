@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 2.8)
 project(Stereo_Reconstruction)
 
+find_package(PCL 1.3 REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+add_executable(pcd_write_test pcd_write.cpp pcd_write.cpp)
+target_link_libraries(pcd_write_test ${PCL_LIBRARIES})
+
+add_executable(normal_estimation_using_integral_images normal_estimation_using_integral_images.cpp normal_estimation_using_integral_images.cpp)
+target_link_libraries(normal_estimation_using_integral_images ${PCL_LIBRARIES})
+
+
 
 find_package( OpenCV REQUIRED )
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)

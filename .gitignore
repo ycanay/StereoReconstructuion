@@ -35,4 +35,6 @@
 build/*
 data/*
 .vscode/*
-*.jpg
+cmake-build-debug/
+
+.idea
