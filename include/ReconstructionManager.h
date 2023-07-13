@@ -12,6 +12,7 @@
 
 #include <DatasetLoader.h>
 #include <ExtrinsicsCalculator.h>
+#include <DensePointCloudCreator.h>
 
 namespace reconstruction{
 
@@ -22,6 +23,7 @@ private:
     DatasetLoader dataset_loader_;
     cv::Ptr<cv::Feature2D> detector_;
     ExtrinsicsCalculator extrinsic_calculator_;
+    DensePointCloudCreator point_cloud_creator_;
 
     //Variables
     ImagePair images_;

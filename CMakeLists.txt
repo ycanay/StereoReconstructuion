@@ -29,7 +29,8 @@ target_link_libraries( ExtrinsicsCalculator Eigen3::Eigen )
 add_executable(Main 
     source/DatasetLoader.cpp 
     source/ExtrinsicsCalculator.cpp
-    source/ReconstructionManager.cpp 
+    source/ReconstructionManager.cpp
+    source/DensePointCloudCreator.cpp
     tests/Main.cpp)
 target_link_libraries( Main ${OpenCV_LIBS} )
 target_link_libraries( Main Eigen3::Eigen )

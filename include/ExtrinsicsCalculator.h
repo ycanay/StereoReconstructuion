@@ -93,7 +93,10 @@ public:
     cv::Mat getEssentialMat();
     Eigen::Matrix3d getFundamentalMatrix();
     cv::Mat getFundamentalMat();
-
+    ImagePair getRectifiedImages();
+    cv::Mat getDisparityMatrix();
+    cv::Rect getROILeft();
+    cv::Rect getROIRight();
 };
 };
 

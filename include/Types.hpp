@@ -45,6 +45,7 @@ struct ImagePair
 {
     Image left_image;
     Image right_image;
+    float baseline_;
 };
 
 };//reconstruction

@@ -9,7 +9,7 @@ namespace reconstruction
  */
 DatasetLoader::DatasetLoader()
 {
-    dataset_path_ = "data/Piano-perfect";
+    dataset_path_ = "data/curule1";
 }
 
 /**
@@ -32,7 +32,18 @@ ImagePair DatasetLoader::getImages(){
     int i = 0;
     Eigen::Matrix3d left_intrinsics;
     Eigen::Matrix3d right_intrinsics;
+    float baseline;
     for(std::string line; std::getline( file_, line );i++){
+        if (i==3)
+        {
+            line = line.substr(9,line.size());
+            baseline = std::stod(line);
+            break;
+        }
+        else if(i==2)
+        {
+            continue;
+        }
         line = line.substr(6,line.size()-7);
         std::vector<std::string> rows = split(line, ';');
         for (int j = 0; j < rows.size(); j++)
@@ -51,12 +62,11 @@ ImagePair DatasetLoader::getImages(){
                 right_intrinsics.row(j) << std::stod(vals[0]), std::stod(vals[1]), std::stod(vals[2]);
             }
         }
-        if (i==1)
-            break;
     }
     ImagePair images;
     images.left_image = Image(image_left, left_intrinsics);
     images.right_image = Image(image_right, right_intrinsics);
+    images.baseline_ = baseline;
     return images;
 }
 

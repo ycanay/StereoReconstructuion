@@ -10,8 +10,9 @@ ReconstructionManager::ReconstructionManager()
 {
     detector_ = cv::SIFT::create();
     k_min_hessian_ = 400;
-    k_min_number_of_matches_ = 20;
+    k_min_number_of_matches_ = 100;
     matcher_ = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
+    point_cloud_creator_ = DensePointCloudCreator(SGBM);
 }
 
 /**
@@ -135,6 +136,8 @@ void ReconstructionManager::process()
     drawMatches();
     calculateMatchingPointsCoordinates();
     extrinsic_calculator_.process(matching_points_, images_);
+    point_cloud_creator_.createPointCloud(extrinsic_calculator_.getRectifiedImages(), extrinsic_calculator_.getDisparityMatrix());
+
 }
 
 

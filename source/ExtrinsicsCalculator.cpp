@@ -148,8 +148,6 @@ void ExtrinsicsCalculator::process(std::vector<PointPair> matching_points, Image
     eightPointMatchingCV(matching_points);
     drawEpipolarLines(matching_points, images);
     calculateEssentialMatrix(images);
-    calculateLeftEpipole();
-    calculateRightEpipole();
     findCorrectTranslations(matching_points, images);
     rectifyImage(images);
     saveImages(images);
@@ -186,8 +184,6 @@ void ExtrinsicsCalculator::findCorrectTranslations(std::vector<PointPair> matchi
         right_points.push_back(pair.right_point);
     }
     cv::recoverPose(essential_, left_points, right_points, intrinsics, R_, T_);
-    std::cout<<R_<<std::endl<<T_<<std::endl;
-
 }
 
 void ExtrinsicsCalculator::rectifyImage(ImagePair images)
@@ -202,22 +198,17 @@ void ExtrinsicsCalculator::rectifyImage(ImagePair images)
                       left_projection_matrix_, right_projection_matrix_, 
                       disparity_map_matrix_, cv::CALIB_ZERO_DISPARITY,
                       -1, img_size, &ROI_left_, &ROI_right_);
-}
-
-void ExtrinsicsCalculator::saveImages(ImagePair images)
-{
-    cv::Mat intr_left, intr_right;
-    cv::Mat distortion;
-    cv::eigen2cv(images.left_image.getCameraIntrinsics(),intr_left);
-    cv::eigen2cv(images.right_image.getCameraIntrinsics(),intr_right);
-    cv::Size img_size(images.left_image.getData().cols,images.left_image.getData().rows);
 
     cv::initUndistortRectifyMap(intr_left, distortion, left_camera_rect_rot_, left_projection_matrix_, img_size, CV_16SC2, mappings_left_[0], mappings_left_[1]);
     cv::initUndistortRectifyMap(intr_right, distortion, right_camera_rect_rot_, right_projection_matrix_, img_size, CV_16SC2, mappings_right_[0], mappings_right_[1]);
 
     remap(images.left_image.getData(), rectified_image_left_, mappings_left_[0], mappings_left_[1], cv::INTER_LINEAR);
-    remap(images.left_image.getData(), rectified_image_right_, mappings_right_[0], mappings_right_[1], cv::INTER_LINEAR);
+    remap(images.right_image.getData(), rectified_image_right_, mappings_right_[0], mappings_right_[1], cv::INTER_LINEAR);
 
+}
+
+void ExtrinsicsCalculator::saveImages(ImagePair images)
+{
     cv::imwrite("rectified_image_left_uncropped.jpg", rectified_image_left_);
     cv::imwrite("rectified_image_right_uncropped.jpg", rectified_image_right_);
     cv::Mat out;
@@ -233,5 +224,31 @@ void ExtrinsicsCalculator::saveImages(ImagePair images)
 
     cv::imwrite("rectified_together.jpeg", out);
 }
+
+ImagePair ExtrinsicsCalculator::getRectifiedImages()
+{
+    ImagePair return_pair;
+    Image left(rectified_image_left_, lined_images_.left_image.getCameraIntrinsics());
+    Image right(rectified_image_right_, lined_images_.right_image.getCameraIntrinsics());
+    return_pair.left_image = left;
+    return_pair.right_image = right;
+    return return_pair;
+}
+
+cv::Mat ExtrinsicsCalculator::getDisparityMatrix()
+{
+    return disparity_map_matrix_;
+}
+
+cv::Rect ExtrinsicsCalculator::getROILeft()
+{
+    return ROI_left_;
+}
+
+cv::Rect ExtrinsicsCalculator::getROIRight()
+{
+    return ROI_right_;
+}
+
 
 };
