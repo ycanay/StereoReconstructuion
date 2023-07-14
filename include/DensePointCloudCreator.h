@@ -20,6 +20,12 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include <iostream>
+
+#include <pcl/io/pcd_io.h>
+#include <pcl/point_types.h>
+#include <pcl/common/io.h>
+#include <pcl/io/ply_io.h>
+
 namespace reconstruction{
 
 enum MatcherType
@@ -40,6 +46,7 @@ private:
     cv::Mat filtered_disparity_;
     cv::Mat reProjectedPoints_;
     MatcherType type_;
+    pcl::PointCloud<pcl::PointXYZRGB> cloud;
 
     void saveDisparityMap();
 public:
@@ -47,6 +54,10 @@ public:
     DensePointCloudCreator();
     ~DensePointCloudCreator();
     void createPointCloud(ImagePair images, cv::Mat transform);
+    void calculatePointCloud(ImagePair images);
+    void saveCloud();
+    void project();
+
 };
 
 };

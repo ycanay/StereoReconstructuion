@@ -75,6 +75,8 @@ void ExtrinsicsCalculator::drawEpipolarLines(std::vector<PointPair> matching_poi
     }
     lined_images_.left_image = Image(left_image, images.left_image.getCameraIntrinsics());
     lined_images_.right_image = Image(right_image, images.right_image.getCameraIntrinsics());
+    lined_images_.baseline_ = images.baseline_;
+    lined_images_.doffs = images.doffs;
     cv::Mat output;
     cv::hconcat(left_image, right_image, output);
     cv::imwrite("output.jpg", output);
@@ -184,6 +186,7 @@ void ExtrinsicsCalculator::findCorrectTranslations(std::vector<PointPair> matchi
         right_points.push_back(pair.right_point);
     }
     cv::recoverPose(essential_, left_points, right_points, intrinsics, R_, T_);
+    T_*= images.baseline_;
 }
 
 void ExtrinsicsCalculator::rectifyImage(ImagePair images)
@@ -232,6 +235,8 @@ ImagePair ExtrinsicsCalculator::getRectifiedImages()
     Image right(rectified_image_right_, lined_images_.right_image.getCameraIntrinsics());
     return_pair.left_image = left;
     return_pair.right_image = right;
+    return_pair.baseline_ = lined_images_.baseline_;
+    return_pair.doffs = lined_images_.doffs;
     return return_pair;
 }
 

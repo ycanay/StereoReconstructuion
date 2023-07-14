@@ -53,14 +53,16 @@ void DensePointCloudCreator::createPointCloud(ImagePair images, cv::Mat transfor
     }
     else
     {
-//        left_matcher_->setNumDisparities((images.left_image.getData().size().width/8) + 15);
         right_matcher_ = cv::ximgproc::createRightMatcher(left_matcher_);
         left_matcher_->compute(images.left_image.getData(), images.right_image.getData(), left_disparity_);
         right_matcher_->compute(images.right_image.getData(), images.left_image.getData(), right_disparity_);
         filter_->filter(left_disparity_, images.left_image.getData(), filtered_disparity_, right_disparity_ , cv::Rect(), images.right_image.getData());
         saveDisparityMap();
-        cv::reprojectImageTo3D(left_disparity_, reProjectedPoints_, transform, true);
+        cv::reprojectImageTo3D(filtered_disparity_, reProjectedPoints_, transform, true);
     }
+    calculatePointCloud(images);
+    saveCloud();
+
 }
 
 void DensePointCloudCreator::saveDisparityMap()
@@ -94,6 +96,47 @@ void DensePointCloudCreator::saveDisparityMap()
         cv::imwrite("confidence.jpeg", confidence);
 
     }
+}
+
+void DensePointCloudCreator::calculatePointCloud(ImagePair images)
+{
+    Eigen::Matrix3d reverse_intr = images.left_image.getCameraIntrinsics().inverse();
+    for(int i = 0; i < filtered_disparity_.size().width; i++)
+    {
+        for (int j = 0; j < filtered_disparity_.size().height; j++)
+        {
+            uint16_t disp = filtered_disparity_.at<uint16_t>(i,j);
+            float disp_corrected = ((double)disp / (double)(1 << 4));
+
+            if(isnan(disp_corrected))
+                continue;
+            float depth = (images.baseline_ * images.left_image.getCameraIntrinsics().coeff(0,0)) / ( disp_corrected+ images.doffs);
+            Eigen::Vector3d point = reverse_intr * Eigen::Vector3d(i, j, depth);
+            cv::Vec3b color = images.left_image.getData().at<cv::Vec3b>(cv::Point(i,j));
+            if(point[2] > 5000)
+                continue;
+            pcl::PointXYZRGB rgb_point;
+            rgb_point.x = point[0];
+            rgb_point.y = point[1];
+            rgb_point.z = point[2];
+
+            rgb_point.b = color[0];
+            rgb_point.g = color[1];
+            rgb_point.r = color[2];
+
+            cloud.push_back(rgb_point);
+        }
+    }
+}
+
+void DensePointCloudCreator::saveCloud()
+{
+    pcl::io::savePLYFile("Point_clouds.ply", cloud, false);
+}
+
+void DensePointCloudCreator::project()
+{
+    
 }
 
 }

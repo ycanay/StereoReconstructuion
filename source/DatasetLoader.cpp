@@ -33,15 +33,18 @@ ImagePair DatasetLoader::getImages(){
     Eigen::Matrix3d left_intrinsics;
     Eigen::Matrix3d right_intrinsics;
     float baseline;
+    float doffs;
     for(std::string line; std::getline( file_, line );i++){
         if (i==3)
         {
             line = line.substr(9,line.size());
-            baseline = std::stod(line);
+            baseline = std::stof(line);
             break;
         }
         else if(i==2)
         {
+            line = line.substr(6,line.size());
+            doffs = std::stof(line);
             continue;
         }
         line = line.substr(6,line.size()-7);
@@ -67,6 +70,7 @@ ImagePair DatasetLoader::getImages(){
     images.left_image = Image(image_left, left_intrinsics);
     images.right_image = Image(image_right, right_intrinsics);
     images.baseline_ = baseline;
+    images.doffs = doffs;
     return images;
 }
 
