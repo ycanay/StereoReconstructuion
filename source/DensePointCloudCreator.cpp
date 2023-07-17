@@ -105,16 +105,16 @@ void DensePointCloudCreator::calculatePointCloud(ImagePair images)
     {
         for (int j = 0; j < filtered_disparity_.size().height; j++)
         {
-            uint16_t disp = filtered_disparity_.at<uint16_t>(i,j);
-            float disp_corrected = ((double)disp / (double)(1 << 4));
+            short disp = filtered_disparity_.at<short>(i, j);
+            float disp_corrected = ((float)disp / (float)(1 << 4));
 
             if(isnan(disp_corrected))
                 continue;
-            float depth = (images.baseline_ * images.left_image.getCameraIntrinsics().coeff(0,0)) / ( disp_corrected+ images.doffs);
-            Eigen::Vector3d point = reverse_intr * Eigen::Vector3d(i, j, depth);
-            cv::Vec3b color = images.left_image.getData().at<cv::Vec3b>(cv::Point(i,j));
-            if(point[2] > 5000)
-                continue;
+            float depth = (images.baseline_ * images.left_image.getCameraIntrinsics().coeff(0,0)) / ( abs(disp_corrected)+ images.doffs);
+            Eigen::Vector3d point = reverse_intr * Eigen::Vector3d(i, j, 1);
+            point *= depth;
+//            point *= 500;
+            cv::Vec3b color = images.left_image.getData().at<cv::Vec3b>(cv::Point(i, j));
             pcl::PointXYZRGB rgb_point;
             rgb_point.x = point[0];
             rgb_point.y = point[1];
