@@ -14,7 +14,7 @@ DensePointCloudCreator::DensePointCloudCreator(MatcherType type)
     type_ = type;
     if (type == BM)
     {
-        left_matcher_ = cv::StereoBM::create(160, 9);
+        left_matcher_ = cv::StereoBM::create(255, 9);
         left_matcher_->setMinDisparity(0);
         left_matcher_->setSpeckleWindowSize(200);
         left_matcher_->setSpeckleRange(32);
@@ -49,7 +49,6 @@ void DensePointCloudCreator::createPointCloud(ImagePair images, cv::Mat transfor
         right_matcher_->compute(right_grey_, left_grey_, right_disparity_);
         filter_->filter(left_disparity_, left_grey_, filtered_disparity_, right_disparity_ );
         saveDisparityMap();
-        cv::reprojectImageTo3D(filtered_disparity_, reProjectedPoints_, transform, true);
     }
     else
     {
@@ -58,7 +57,6 @@ void DensePointCloudCreator::createPointCloud(ImagePair images, cv::Mat transfor
         right_matcher_->compute(images.right_image.getData(), images.left_image.getData(), right_disparity_);
         filter_->filter(left_disparity_, images.left_image.getData(), filtered_disparity_, right_disparity_ , cv::Rect(), images.right_image.getData());
         saveDisparityMap();
-        cv::reprojectImageTo3D(filtered_disparity_, reProjectedPoints_, transform, true);
     }
     calculatePointCloud(images);
     saveCloud();
@@ -86,8 +84,7 @@ void DensePointCloudCreator::saveDisparityMap()
         cv::Mat confidence = filter_->getConfidenceMap();
         cv::Rect roi(0,0,filtered_disparity_.size().width*0.8, filtered_disparity_.size().height*0.8);
         cv::Mat image_to_save, left, right, conf;
-        image_to_save = filtered_disparity_(roi);
-        cv::ximgproc::getDisparityVis(image_to_save, image_to_save);
+        cv::ximgproc::getDisparityVis(filtered_disparity_, image_to_save);
         cv::ximgproc::getDisparityVis(left_disparity_, left);
         cv::ximgproc::getDisparityVis(right_disparity_, right, -1);
         cv::imwrite("disparity_map.jpeg", image_to_save);
@@ -105,15 +102,15 @@ void DensePointCloudCreator::calculatePointCloud(ImagePair images)
     {
         for (int j = 0; j < filtered_disparity_.size().height; j++)
         {
-            short disp = filtered_disparity_.at<short>(i, j);
-            float disp_corrected = ((float)disp / (float)(1 << 4));
-
-            if(isnan(disp_corrected))
+            short pixVal = filtered_disparity_.at<short>(j, i);
+            float disparity = pixVal / 16.0f;
+            if(disparity > 255.1 || disparity < 0 || isnan(disparity))
+            {
                 continue;
-            float depth = (images.baseline_ * images.left_image.getCameraIntrinsics().coeff(0,0)) / ( abs(disp_corrected)+ images.doffs);
+            }
+            float depth = (images.baseline_ * images.left_image.getCameraIntrinsics().coeff(0,0)) / ( abs(disparity)+ images.doffs);
             Eigen::Vector3d point = reverse_intr * Eigen::Vector3d(i, j, 1);
             point *= depth;
-//            point *= 500;
             cv::Vec3b color = images.left_image.getData().at<cv::Vec3b>(cv::Point(i, j));
             pcl::PointXYZRGB rgb_point;
             rgb_point.x = point[0];
@@ -132,11 +129,6 @@ void DensePointCloudCreator::calculatePointCloud(ImagePair images)
 void DensePointCloudCreator::saveCloud()
 {
     pcl::io::savePLYFile("Point_clouds.ply", cloud, false);
-}
-
-void DensePointCloudCreator::project()
-{
-    
 }
 
 }

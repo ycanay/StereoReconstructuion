@@ -56,7 +56,6 @@ public:
     void createPointCloud(ImagePair images, cv::Mat transform);
     void calculatePointCloud(ImagePair images);
     void saveCloud();
-    void project();
 
 };
 
