@@ -11,16 +11,28 @@
 #ifndef NORMAL_CALCULATOR_H
 #define NORMAL_CALCULATOR_H
 
+#include <pcl/visualization/pcl_visualizer.h>
+#include <iostream>
+#include <pcl/common/io.h>
+#include <pcl/io/pcd_io.h>
+#include <pcl/features/integral_image_normal.h>
+#include <pcl/point_types.h>
+#include <pcl/features/normal_3d.h>
+
 namespace reconstruction
 {
 class NormalCalculator
 {
 private:
-    /* data */
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_;
+    pcl::NormalEstimation<pcl::PointXYZRGB, pcl::Normal> ne_;
+    pcl::PointCloud<pcl::Normal>::Ptr normals_;
 public:
-    NormalCalculator(/* args */);
+    NormalCalculator();
     ~NormalCalculator();
-    void calculateNormals();
+    void setCloud(pcl::PointCloud<pcl::PointXYZRGB> cloud);
+    void calculateNormals(pcl::PointCloud<pcl::PointXYZRGB> cloud);
+    void visualise(pcl::PointCloud<pcl::PointXYZRGB> cloud);
 };
 
 };

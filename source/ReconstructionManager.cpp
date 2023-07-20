@@ -137,7 +137,8 @@ void ReconstructionManager::process()
     calculateMatchingPointsCoordinates();
     extrinsic_calculator_.process(matching_points_, images_);
     point_cloud_creator_.createPointCloud(extrinsic_calculator_.getRectifiedImages(), extrinsic_calculator_.getDisparityMatrix());
-
+    normal_calculator_.calculateNormals(point_cloud_creator_.getCloud());
+    normal_calculator_.visualise(point_cloud_creator_.getCloud());
 }
 
 

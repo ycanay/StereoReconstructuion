@@ -56,6 +56,7 @@ public:
     void createPointCloud(ImagePair images, cv::Mat transform);
     void calculatePointCloud(ImagePair images);
     void saveCloud();
+    pcl::PointCloud<pcl::PointXYZRGB> getCloud();
 
 };
 

@@ -9,7 +9,7 @@ namespace reconstruction
  */
 DatasetLoader::DatasetLoader()
 {
-    dataset_path_ = "data/curule1";
+    dataset_path_ = "data/Piano-perfect";
 }
 
 /**

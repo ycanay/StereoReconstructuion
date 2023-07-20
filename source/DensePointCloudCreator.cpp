@@ -131,4 +131,9 @@ void DensePointCloudCreator::saveCloud()
     pcl::io::savePLYFile("Point_clouds.ply", cloud, false);
 }
 
+
+pcl::PointCloud<pcl::PointXYZRGB> DensePointCloudCreator::getCloud()
+{
+    return cloud;
+}
 }
