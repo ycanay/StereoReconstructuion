@@ -14,6 +14,7 @@
 #include <ExtrinsicsCalculator.h>
 #include <DensePointCloudCreator.h>
 #include <NormalCalculator.h>
+#include <MeshCreator.h>
 namespace reconstruction{
 
 class ReconstructionManager
@@ -25,6 +26,7 @@ private:
     ExtrinsicsCalculator extrinsic_calculator_;
     DensePointCloudCreator point_cloud_creator_;
     NormalCalculator normal_calculator_;
+    MeshCreator mesh_creator_;
 
     //Variables
     ImagePair images_;

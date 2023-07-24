@@ -6,6 +6,7 @@ include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
+find_package(CGAL)
 find_package( OpenCV REQUIRED )
 find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 include_directories( ${OpenCV_INCLUDE_DIRS})
@@ -25,7 +26,9 @@ add_executable(Main
     source/ReconstructionManager.cpp
     source/DensePointCloudCreator.cpp
     source/NormalCalculator.cpp
+    source/MeshCreator.cpp
     tests/Main.cpp)
 target_link_libraries( Main ${OpenCV_LIBS} )
 target_link_libraries( Main Eigen3::Eigen )
 target_link_libraries( Main ${PCL_LIBRARIES})
+target_link_libraries(Main CGAL::CGAL)

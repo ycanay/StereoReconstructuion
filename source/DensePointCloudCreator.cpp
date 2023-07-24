@@ -60,7 +60,6 @@ void DensePointCloudCreator::createPointCloud(ImagePair images, cv::Mat transfor
     }
     calculatePointCloud(images);
     saveCloud();
-
 }
 
 void DensePointCloudCreator::saveDisparityMap()

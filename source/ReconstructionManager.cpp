@@ -136,9 +136,14 @@ void ReconstructionManager::process()
     drawMatches();
     calculateMatchingPointsCoordinates();
     extrinsic_calculator_.process(matching_points_, images_);
-    point_cloud_creator_.createPointCloud(extrinsic_calculator_.getRectifiedImages(), extrinsic_calculator_.getDisparityMatrix());
-    normal_calculator_.calculateNormals(point_cloud_creator_.getCloud());
-    normal_calculator_.visualise(point_cloud_creator_.getCloud());
+    point_cloud_creator_.createPointCloud(extrinsic_calculator_.getRectifiedImages(), extrinsic_calculator_.getDisparityMatrix());/*
+    normal_calculator_.pclCalculateNormals(point_cloud_creator_.getCloud());
+    normal_calculator_.pclVisualise(point_cloud_creator_.getCloud());*/
+    normal_calculator_.cgalLoadCloud();
+    normal_calculator_.cgalPreprocessCloud();
+    normal_calculator_.cgalSaveProcessedCloud();
+    normal_calculator_.cgalCalculateNormals();
+    mesh_creator_.createMesh(normal_calculator_.cgalGetCloud(), normal_calculator_.cgalGetSpacing());
 }
 
 
