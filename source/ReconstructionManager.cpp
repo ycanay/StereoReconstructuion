@@ -129,6 +129,11 @@ std::vector<PointPair> ReconstructionManager::getMatchingPointCoordinates()
     return this->matching_points_;
 }
 
+
+/**
+ * @brief Main Function of the whole processor
+ * 
+ */
 void ReconstructionManager::process()
 {
     images_ = dataset_loader_.getImages();

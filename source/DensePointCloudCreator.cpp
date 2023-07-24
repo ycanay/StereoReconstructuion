@@ -97,9 +97,9 @@ void DensePointCloudCreator::saveDisparityMap()
 void DensePointCloudCreator::calculatePointCloud(ImagePair images)
 {
     Eigen::Matrix3d reverse_intr = images.left_image.getCameraIntrinsics().inverse();
-    for(int i = 0; i < filtered_disparity_.size().width; i++)
+    for(int i = 0; i < filtered_disparity_.size().width; i+=4)
     {
-        for (int j = 0; j < filtered_disparity_.size().height; j++)
+        for (int j = 0; j < filtered_disparity_.size().height; j+=4)
         {
             short pixVal = filtered_disparity_.at<short>(j, i);
             float disparity = pixVal / 16.0f;

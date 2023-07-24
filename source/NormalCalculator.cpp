@@ -9,6 +9,11 @@ typedef Kernel::Vector_3 Vector_3;
 typedef Kernel::Sphere_3 Sphere_3;
 typedef CGAL::Point_set_3<Point_3, Vector_3> Point_set;
 
+
+/**
+ * @brief Constructor
+ * 
+ */
 NormalCalculator::NormalCalculator(/* args */)
 {
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloudPTR(new pcl::PointCloud<pcl::PointXYZRGB>);
@@ -17,11 +22,21 @@ NormalCalculator::NormalCalculator(/* args */)
     pcl_normals_ = normals;
 }
 
+
+/**
+ * @brief Destroy the Normal Calculator:: Normal Calculator objectD
+ * 
+ */
 NormalCalculator::~NormalCalculator()
 {
 }
 
 
+/**
+ * @brief Calculate the normals using pcl functions
+ * 
+ * @param cloud 
+ */
 void NormalCalculator::pclCalculateNormals(pcl::PointCloud<pcl::PointXYZRGB> cloud)
 {
     pcl_cloud_ = cloud.makeShared();
@@ -33,6 +48,12 @@ void NormalCalculator::pclCalculateNormals(pcl::PointCloud<pcl::PointXYZRGB> clo
     std::cout<<pcl_normals_->size()<<std::endl;
 }
 
+
+/**
+ * @brief Visualise the normal with pcl
+ * 
+ * @param cloud 
+ */
 void NormalCalculator::pclVisualise(pcl::PointCloud<pcl::PointXYZRGB> cloud)
 {
     pcl::visualization::PCLVisualizer viewer("PCL Viewer");
@@ -46,6 +67,10 @@ void NormalCalculator::pclVisualise(pcl::PointCloud<pcl::PointXYZRGB> cloud)
 }
 
 
+/**
+ * @brief Load the cloud from the file saved on the Dense Point Creator using CGAL functions
+ * 
+ */
 void NormalCalculator::cgalLoadCloud()
 {
     std::string fname = "Point_clouds.ply";
@@ -63,6 +88,10 @@ void NormalCalculator::cgalLoadCloud()
 }
 
 
+/**
+ * @brief Preprocess Cloud to reduce number of points and remove outlier points uisng CGAL functions
+ * 
+ */
 void NormalCalculator::cgalPreprocessCloud()
 {
     typename Point_set::iterator rout_it = CGAL::remove_outliers<CGAL::Sequential_tag>
@@ -74,7 +103,7 @@ void NormalCalculator::cgalPreprocessCloud()
                 << " point(s) are outliers." << std::endl;
     cgal_cloud_.collect_garbage();
     double spacing_ = CGAL::compute_average_spacing<CGAL::Sequential_tag> (cgal_cloud_, 6);
-    typename Point_set::iterator gsim_it = CGAL::grid_simplify_point_set (cgal_cloud_, 4 * spacing_);
+    typename Point_set::iterator gsim_it = CGAL::grid_simplify_point_set (cgal_cloud_, 3 * spacing_);
     cgal_cloud_.remove(gsim_it, cgal_cloud_.end());
     std::cout << cgal_cloud_.number_of_removed_points()
                 << " point(s) removed after simplification." << std::endl;
@@ -83,12 +112,22 @@ void NormalCalculator::cgalPreprocessCloud()
     CGAL::jet_smooth_point_set<CGAL::Sequential_tag> (cgal_cloud_, 12);
 }
 
+
+/**
+ * @brief Save Processesd Cloud
+ * 
+ */
 void NormalCalculator::cgalSaveProcessedCloud()
 {
     std::cout<<cgal_cloud_.size()<< " point(s) left after normals." << std::endl;
     CGAL::IO::write_PLY("processed.ply", cgal_cloud_);
 }
 
+
+/**
+ * @brief Calculate normals using CGAL functions
+ * 
+ */
 void NormalCalculator::cgalCalculateNormals()
 {
     CGAL::jet_estimate_normals<CGAL::Sequential_tag>
@@ -97,11 +136,23 @@ void NormalCalculator::cgalCalculateNormals()
     CGAL::scanline_orient_normals(cgal_cloud_);
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return Point_set 
+ */
 Point_set NormalCalculator::cgalGetCloud()
 {
     return cgal_cloud_;
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return double 
+ */
 double NormalCalculator::cgalGetSpacing()
 {
     return spacing_;

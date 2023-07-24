@@ -4,7 +4,7 @@ namespace reconstruction
 {
 
 /**
- * @brief Construct a new Dataset Loader:: Dataset Loader object
+ * @brief Construct a new Dataset Loader:: Dataset Loader object set the name of the dataset. If you want to chnage it change the name in here accordingly.
  * 
  */
 DatasetLoader::DatasetLoader()

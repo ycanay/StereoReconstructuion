@@ -19,7 +19,7 @@ ExtrinsicsCalculator::~ExtrinsicsCalculator()
 }
 
 /**
- * @brief Calculate essential matrix
+ * @brief Calculate homography matrix.
  * 
  * @param matching_points Points to match
  */
@@ -37,6 +37,11 @@ void ExtrinsicsCalculator::eightPointMatching(std::vector<PointPair> matching_po
 }
 
 
+/**
+ * @brief Do eight point matching and calculate fundamental matrix
+ * 
+ * @param matching_points 
+ */
 void ExtrinsicsCalculator::eightPointMatchingCV(std::vector<PointPair> matching_points)
 {
     std::vector<cv::Point2f> left_points;
@@ -51,6 +56,12 @@ void ExtrinsicsCalculator::eightPointMatchingCV(std::vector<PointPair> matching_
 }
 
 
+/**
+ * @brief Draw the epipolar lines to the images
+ * 
+ * @param matching_points 
+ * @param images 
+ */
 void ExtrinsicsCalculator::drawEpipolarLines(std::vector<PointPair> matching_points, ImagePair images)
 {
     cv::Mat left_image,right_image; 
@@ -83,12 +94,22 @@ void ExtrinsicsCalculator::drawEpipolarLines(std::vector<PointPair> matching_poi
 }
 
 
-
+/**
+ * @brief Get homography matrix if needed
+ * 
+ * @return Eigen::Matrix3d 
+ */
 Eigen::Matrix3d ExtrinsicsCalculator::getHomography()
 {
     return homography_eigen_;
 }
 
+
+/**
+ * @brief Calculate essential matrix from the fundamental matrix
+ * 
+ * @param images 
+ */
 void ExtrinsicsCalculator::calculateEssentialMatrix(ImagePair images)
 {
     Eigen::Matrix3d K_1 = images.left_image.getCameraIntrinsics();
@@ -97,26 +118,56 @@ void ExtrinsicsCalculator::calculateEssentialMatrix(ImagePair images)
     cv::eigen2cv(essential_eigen_,essential_);
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return Eigen::Matrix3d 
+ */
 Eigen::Matrix3d ExtrinsicsCalculator::getEssentialMatrix()
 {
     return essential_eigen_;
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return cv::Mat 
+ */
 cv::Mat ExtrinsicsCalculator::getEssentialMat()
 {
     return essential_;
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return Eigen::Matrix3d 
+ */
 Eigen::Matrix3d ExtrinsicsCalculator::getFundamentalMatrix()
 {
     return fundamental_eigen_;
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return cv::Mat 
+ */
 cv::Mat ExtrinsicsCalculator::getFundamentalMat()
 {
     return fundamental_;
 }
 
+
+/**
+ * @brief Calculate transfromation by uncalibrated cameras
+ * 
+ * @param matching_points 
+ */
 void ExtrinsicsCalculator::calculateTransofmration(std::vector<PointPair> matching_points)
 {
     std::vector<cv::Point2f> left_points;
@@ -130,6 +181,11 @@ void ExtrinsicsCalculator::calculateTransofmration(std::vector<PointPair> matchi
 
 } 
 
+
+/**
+ * @brief Draw the rectified images
+ * 
+ */
 void ExtrinsicsCalculator::drawRectifiedImages()
 {
     cv::imwrite("left_rect.jpeg", left_rect_);
@@ -139,12 +195,24 @@ void ExtrinsicsCalculator::drawRectifiedImages()
     cv::imwrite("rectitied_concat.jpg", out);
 }
 
+
+/**
+ * @brief Calculate the rectified images from the homography matrix
+ * 
+ */
 void ExtrinsicsCalculator::calculateRectifiedImages()
 {
     cv::warpPerspective(lined_images_.left_image.getData(), left_rect_, H1_, cv::Size(lined_images_.left_image.getData().cols, lined_images_.left_image.getData().rows));
     cv::warpPerspective(lined_images_.right_image.getData(), right_rect_, H2_, cv::Size(lined_images_.right_image.getData().cols, lined_images_.right_image.getData().rows));
 }
 
+
+/**
+ * @brief Process the extrinsics matrix. Main function of the Extrinsic calculator
+ * 
+ * @param matching_points 
+ * @param images 
+ */
 void ExtrinsicsCalculator::process(std::vector<PointPair> matching_points, ImagePair images)
 {
     eightPointMatchingCV(matching_points);
@@ -156,6 +224,12 @@ void ExtrinsicsCalculator::process(std::vector<PointPair> matching_points, Image
 
 }
 
+
+/**
+ * @brief Calculate the left epipole point
+ * 
+ * @return Eigen::Vector3d 
+ */
 Eigen::Vector3d ExtrinsicsCalculator::calculateLeftEpipole()
 {
     Eigen::JacobiSVD<Eigen::Matrix3d, Eigen::ComputeFullU | Eigen::ComputeFullV> svd(fundamental_eigen_);
@@ -165,6 +239,12 @@ Eigen::Vector3d ExtrinsicsCalculator::calculateLeftEpipole()
     return e;
 }
 
+
+/**
+ * @brief Calculate the right epipole point
+ * 
+ * @return Eigen::Vector3d 
+ */
 Eigen::Vector3d ExtrinsicsCalculator::calculateRightEpipole()
 {
     Eigen::JacobiSVD<Eigen::Matrix3d, Eigen::ComputeFullU | Eigen::ComputeFullV> svd(fundamental_eigen_.transpose());
@@ -175,6 +255,12 @@ Eigen::Vector3d ExtrinsicsCalculator::calculateRightEpipole()
 }
 
 
+/**
+ * @brief Find the transformation from the essential matrix
+ * 
+ * @param matching_points 
+ * @param images 
+ */
 void ExtrinsicsCalculator::findCorrectTranslations(std::vector<PointPair> matching_points, ImagePair images){
     std::vector<cv::Point2f> left_points;
     std::vector<cv::Point2f> right_points;
@@ -189,6 +275,12 @@ void ExtrinsicsCalculator::findCorrectTranslations(std::vector<PointPair> matchi
     T_*= images.baseline_;
 }
 
+
+/**
+ * @brief Calculate the rectifying transformations
+ * 
+ * @param images 
+ */
 void ExtrinsicsCalculator::rectifyImage(ImagePair images)
 {
     cv::Mat distortion;
@@ -210,6 +302,12 @@ void ExtrinsicsCalculator::rectifyImage(ImagePair images)
 
 }
 
+
+/**
+ * @brief Save the rectified images
+ * 
+ * @param images 
+ */
 void ExtrinsicsCalculator::saveImages(ImagePair images)
 {
     cv::imwrite("rectified_image_left_uncropped.jpg", rectified_image_left_);
@@ -228,6 +326,12 @@ void ExtrinsicsCalculator::saveImages(ImagePair images)
     cv::imwrite("rectified_together.jpeg", out);
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return ImagePair 
+ */
 ImagePair ExtrinsicsCalculator::getRectifiedImages()
 {
     ImagePair return_pair;
@@ -240,16 +344,34 @@ ImagePair ExtrinsicsCalculator::getRectifiedImages()
     return return_pair;
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return cv::Mat 
+ */
 cv::Mat ExtrinsicsCalculator::getDisparityMatrix()
 {
     return disparity_map_matrix_;
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return cv::Rect 
+ */
 cv::Rect ExtrinsicsCalculator::getROILeft()
 {
     return ROI_left_;
 }
 
+
+/**
+ * @brief 
+ * 
+ * @return cv::Rect 
+ */
 cv::Rect ExtrinsicsCalculator::getROIRight()
 {
     return ROI_right_;

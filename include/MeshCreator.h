@@ -1,6 +1,6 @@
 /**
  * @file MeshCreator.h
- * @brief This class creates the mesh from the point cloud and normals. Possion surface reconstruction algorithm needs to be implemented here.
+ * @brief This class creates the mesh from the point cloud and normals.
  * @version 0.1
  * @date 2023-06-28
  * 

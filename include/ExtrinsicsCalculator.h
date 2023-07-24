@@ -1,6 +1,6 @@
 /**
  * @file ExtrinsicsCalculator.h
- * @brief That Function calculates the essential and the fundamental matrices.
+ * @brief That Function calculates the essential and fundamental matrices and rectifying transforms.
  * @version 0.1
  * @date 2023-06-26
  * 
@@ -29,12 +29,6 @@
 
 namespace reconstruction
 {
-
-/**
- * TODO:
- * Check homography. Add the cv::sfm module.
- * 
- */
 
 
 class ExtrinsicsCalculator

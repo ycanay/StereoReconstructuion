@@ -12,6 +12,12 @@ MeshCreator::~MeshCreator()
 {
 }
 
+/**
+ * @brief Create the mesh from the calculated point cloud and the normals.
+ * 
+ * @param cgal_cloud 
+ * @param spacing 
+ */
 void MeshCreator::createMesh(Point_set cgal_cloud, double spacing)
 {
     std::cout<<"Started Poisson"<<std::endl;
