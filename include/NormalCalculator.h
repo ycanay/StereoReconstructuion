@@ -64,6 +64,8 @@ public:
     void cgalSaveProcessedCloud();
     Point_set cgalGetCloud();
     double cgalGetSpacing();
+    void cgalOrientNormals();
+
 };
 
 };

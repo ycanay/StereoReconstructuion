@@ -96,20 +96,22 @@ void NormalCalculator::cgalPreprocessCloud()
 {
     typename Point_set::iterator rout_it = CGAL::remove_outliers<CGAL::Sequential_tag>
         (cgal_cloud_,
-        12, // Number of neighbors considered for evaluation
+        24, // Number of neighbors considered for evaluation
         cgal_cloud_.parameters().threshold_percent (5.0)); // Percentage of points to remove
     cgal_cloud_.remove(rout_it, cgal_cloud_.end());
     std::cout << cgal_cloud_.number_of_removed_points()
                 << " point(s) are outliers." << std::endl;
     cgal_cloud_.collect_garbage();
-    double spacing_ = CGAL::compute_average_spacing<CGAL::Sequential_tag> (cgal_cloud_, 6);
-    typename Point_set::iterator gsim_it = CGAL::grid_simplify_point_set (cgal_cloud_, 3 * spacing_);
+
+
+    spacing_ = CGAL::compute_average_spacing<CGAL::Sequential_tag> (cgal_cloud_, 6);
+    typename Point_set::iterator gsim_it = CGAL::grid_simplify_point_set (cgal_cloud_, 2 * spacing_);
     cgal_cloud_.remove(gsim_it, cgal_cloud_.end());
     std::cout << cgal_cloud_.number_of_removed_points()
                 << " point(s) removed after simplification." << std::endl;
     cgal_cloud_.collect_garbage();
 
-    CGAL::jet_smooth_point_set<CGAL::Sequential_tag> (cgal_cloud_, 12);
+    CGAL::jet_smooth_point_set<CGAL::Sequential_tag> (cgal_cloud_, 24);
 }
 
 
@@ -133,7 +135,7 @@ void NormalCalculator::cgalCalculateNormals()
     CGAL::jet_estimate_normals<CGAL::Sequential_tag>
         (cgal_cloud_, 24); // Use 12 neighbors
     // Orientation of normals, returns iterator to first unoriented point
-    CGAL::scanline_orient_normals(cgal_cloud_);
+    cgalOrientNormals();
 }
 
 
@@ -156,6 +158,20 @@ Point_set NormalCalculator::cgalGetCloud()
 double NormalCalculator::cgalGetSpacing()
 {
     return spacing_;
+}
+
+
+
+void NormalCalculator::cgalOrientNormals()
+{
+    for(auto it = cgal_cloud_.normals().begin(); it != cgal_cloud_.normals().end(); it++)
+    {
+      auto normal = *it;
+      if (normal.z() > 0)
+      {
+        *it *= -1;
+      }
+    }
 }
 
 };
