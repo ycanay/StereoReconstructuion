@@ -20,6 +20,8 @@
 #include <cstdlib>
 #include <vector>
 #include <fstream>
+
+
 namespace reconstruction{
 typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
 typedef Kernel::FT FT;
@@ -32,11 +34,18 @@ class MeshCreator
 {
 private:
     CGAL::Surface_mesh<Point_3> output_mesh_;
+    double max_x_;
+    double max_y_;
+    double min_x_;
+    double min_y_;
 
 public:
     MeshCreator(/* args */);
     ~MeshCreator();
     void createMesh(Point_set cgal_cloud, double spacing);
+    void readMesh();
+    void getBoundaries(Point_set cgal_cloud);
+
 };
 
 };
