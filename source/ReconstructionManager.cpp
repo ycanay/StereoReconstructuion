@@ -136,17 +136,31 @@ std::vector<PointPair> ReconstructionManager::getMatchingPointCoordinates()
  */
 void ReconstructionManager::process()
 {
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
     images_ = dataset_loader_.getImages();
     detectKeypointsAndeMatch();
     drawMatches();
     calculateMatchingPointsCoordinates();
+    now = std::chrono::steady_clock::now();
+    std::cout << "Keypoint extraction and matching took = " << std::chrono::duration_cast<std::chrono::milliseconds>(now - begin).count() << "[ms]" << std::endl;
     extrinsic_calculator_.process(matching_points_, images_);
+    std::cout << "Extrinsics Calculation took = " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count() << "[ms]" << std::endl;
+    now = std::chrono::steady_clock::now();
     point_cloud_creator_.createPointCloud(extrinsic_calculator_.getRectifiedImages(), extrinsic_calculator_.getDisparityMatrix());
+    std::cout << "Point Cloud Calculation took = " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count() << "[ms]" << std::endl;
+    now = std::chrono::steady_clock::now();
     normal_calculator_.cgalLoadCloud();
     normal_calculator_.cgalPreprocessCloud();
     normal_calculator_.cgalSaveProcessedCloud();
     normal_calculator_.cgalCalculateNormals();
+    std::cout << "Normal Calculation took = " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count() << "[ms]" << std::endl;
+    now = std::chrono::steady_clock::now();
     mesh_creator_.createMesh(normal_calculator_.cgalGetCloud(), normal_calculator_.cgalGetSpacing());
+    std::cout << "Mesh Creation took = " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now).count() << "[ms]" << std::endl;
+    now = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    std::cout << "Whole Process = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 }
 
 

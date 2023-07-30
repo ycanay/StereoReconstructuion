@@ -15,6 +15,7 @@
 #include <DensePointCloudCreator.h>
 #include <NormalCalculator.h>
 #include <MeshCreator.h>
+#include <chrono>
 namespace reconstruction{
 
 class ReconstructionManager
