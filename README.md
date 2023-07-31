@@ -49,6 +49,20 @@ In my system I have added them as :
   "/usr/local/include/ceres"
 ] 
 ```
+Install pcl
+```bash
+sudo apt install libpcl-dev
+```
+
+Clone cgal and install it.
+```bash
+git clone https://github.com/CGAL/cgal.git
+cd cgal
+mkdir build
+cmake ..
+sudo make install
+```
+
 
 Clone project repo and try to build
 
@@ -66,10 +80,6 @@ In total it should look something like this
 ![image](https://github.com/ycanay/StereoReconstructuion/assets/18121684/a95f9f32-52a8-445b-a82d-5a9223f535c7)
 
 ---
-Install pcl
-```bash
-sudo apt install libpcl-dev
-```
 
 ## Build and execute
 ```bash
@@ -79,3 +89,15 @@ make all
 ./Main
 ```
 You will find the output images in this build directory.
+
+## Classes and code description
+| Class Name             | Description                                                                                            |
+|------------------------|--------------------------------------------------------------------------------------------------------|
+| ReconstructionManager  | This is the main class that handles the whole pipeline. Every other classes are connected to this one. |
+| DatasetLoader          | This one is to load images and read the calibration file.                                              |
+| ExtrinsicsCalculator   | This one does the whole rectification process.                                                         |
+| DensePointCloudCreator | This class creates the disparity map and samples the points.                                           |
+| NormalCalculator       | This class calculates normals of point cloud and does the post processing of the pointcloud.           |
+| MeshCreator            | This class runs the poisson surface reconstruction algorithm.                                          |
+
+Main function is the ReconstructionManager::process(). You can track the code flow from that function.
